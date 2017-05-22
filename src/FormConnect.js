@@ -50,7 +50,7 @@ export default class FormConnect extends PureComponent {
             this.subscription.whenError(props.whenError);
         }
 
-        this.subscription.subscribe(() => this.forceUpdate);
+        this.subscription.subscribe(() => this.forceUpdate());
     }
 
     componentWillUnmount() {
