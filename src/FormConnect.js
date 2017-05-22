@@ -19,8 +19,6 @@ export default class FormConnect extends PureComponent {
     constructor(props, context) {
         super(props, context);
 
-        this.forceUpdate = this.forceUpdate.bind(this);
-
         this.subscription = props.form.getObservable();
 
         if (props.whenChanged) {
@@ -52,7 +50,7 @@ export default class FormConnect extends PureComponent {
             this.subscription.whenError(props.whenError);
         }
 
-        this.subscription.subscribe(this.forceUpdate);
+        this.subscription.subscribe(() => this.forceUpdate);
     }
 
     componentWillUnmount() {
