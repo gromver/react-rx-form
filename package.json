@@ -39,7 +39,8 @@
   "homepage": "https://github.com/gromver/react-rx-form#readme",
   "dependencies": {
     "prop-types": "^15.5.10",
-    "rx-form": "^1.0.0",
+    "rx-form": "^1.0.9",
+    "rx-model": "^1.0.1",
     "rxjs": "^5.3.0"
   },
   "peerDependencies": {

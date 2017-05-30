@@ -1,5 +1,4 @@
 import FormConnect from './FormConnect';
 
-export {
-    FormConnect
-}
+// eslint-disable-next-line import/prefer-default-export
+export { FormConnect };
