@@ -6,8 +6,8 @@ export default class FormConnect extends PureComponent {
   static propTypes = {
     form: PropTypes.instanceOf(Form).isRequired,
     children: PropTypes.func.isRequired,
-    whenForm: PropTypes.arrayOf(PropTypes.string),
-    whenModel: PropTypes.arrayOf(PropTypes.string),
+    whenForm: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.bool]),
+    whenModel: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.bool]),
   };
 
   static defaultProps = {
@@ -18,30 +18,28 @@ export default class FormConnect extends PureComponent {
   constructor(props, context) {
     super(props, context);
 
-    let formObservable = props.form.getObservable();
+    const observable = props.form.getObservable();
 
-    if (props.whenForm.length) {
-      formObservable = props.form.when(props.whenForm);
+    if (props.whenForm === true) {
+      observable.whenFormChanged();
+    } else if (Array.isArray(props.whenForm) && props.whenForm.length) {
+      observable.whenStateChanged(props.whenForm);
     }
 
-    this.formSubscription = formObservable.subscribe(() => this.forceUpdate());
-
-    const modelObservable = props.form.getModel().getObservable();
-
-    if (props.whenModel.length) {
-      modelObservable.when(props.whenModel);
+    if (props.whenModel === true) {
+      observable.whenModelChanged();
+    } else if (Array.isArray(props.whenModel) && props.whenModel.length) {
+      observable.whenAttributesChanged(props.whenModel);
     }
 
-    this.modelSubscription = modelObservable.subscribe(() => this.forceUpdate());
+    this.subscription = observable.subscribe(() => this.forceUpdate());
   }
 
   componentWillUnmount() {
-    this.formSubscription.unsubscribe();
-    this.modelSubscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
-  formSubscription;
-  modelSubscription;
+  subscription;
 
   render() {
     return this.props.children(this.props.form);

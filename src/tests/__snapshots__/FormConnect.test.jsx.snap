@@ -4,11 +4,7 @@ exports[`Test FormConnect FormConnect with no when... props 2`] = `<span />`;
 
 exports[`Test FormConnect FormConnect with no when... props 3`] = `<span />`;
 
-exports[`Test FormConnect FormConnect with no when... props 4`] = `
-<span>
-  error
-</span>
-`;
+exports[`Test FormConnect FormConnect with no when... props 4`] = `<span />`;
 
 exports[`Test FormConnect FormConnect with whenForm prop 1`] = `<span />`;
 

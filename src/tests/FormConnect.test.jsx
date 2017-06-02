@@ -12,16 +12,16 @@ describe('Test FormConnect', () => {
       return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
     });
 
-    const component = renderer.create(<FormConnect form={form}>{mockFn}</FormConnect>);
+    const component = renderer.create(<FormConnect form={form} whenForm>{mockFn}</FormConnect>);
 
     form.setAttribute('name', 'a');
     form.set('foo', 'bar');
-    expect(mockFn).toHaveBeenCalledTimes(3);
+    expect(mockFn).toHaveBeenCalledTimes(2);
     expect(component).toMatchSnapshot();
 
     mockFn.mockClear();
     await form.validateAttributes('name');
-    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledTimes(0);
     expect(component).toMatchSnapshot();
 
     mockFn.mockClear();
@@ -33,7 +33,7 @@ describe('Test FormConnect', () => {
     mockFn.mockClear();
     form.setAttribute('password', 'abc');
     await form.validateAttributes('password');
-    expect(mockFn).toHaveBeenCalledTimes(2);
+    expect(mockFn).toHaveBeenCalledTimes(0);
     expect(component).toMatchSnapshot();
   });
 
@@ -53,12 +53,12 @@ describe('Test FormConnect', () => {
     form.set('c', 'c');
     form.set('d', 'd');
     form.set('e', 'e');
-    expect(mockFn).toHaveBeenCalledTimes(3);
+    expect(mockFn).toHaveBeenCalledTimes(2);
     expect(component).toMatchSnapshot();
 
     mockFn.mockClear();
     form.setAttribute('password', 'abc');
-    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledTimes(0);
     expect(component).toMatchSnapshot();
   });
 
@@ -75,7 +75,7 @@ describe('Test FormConnect', () => {
     form.setAttribute('name', 'Paul');
     form.set('a', 'a');
     form.set('b', 'b');
-    expect(mockFn).toHaveBeenCalledTimes(2);
+    expect(mockFn).toHaveBeenCalledTimes(0);
 
     mockFn.mockClear();
     form.setAttribute('name', 'John');
