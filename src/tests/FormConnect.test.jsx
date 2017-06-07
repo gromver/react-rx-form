@@ -166,7 +166,7 @@ describe('Test FormConnect', () => {
     });
 
     renderer.create(
-      <FormConnect form={form} whenModel={['password']}>{mockFn}</FormConnect>
+      <FormConnect form={form} whenModel={['password', 'name']}>{mockFn}</FormConnect>
     );
 
     mockFn.mockClear();

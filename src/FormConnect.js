@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'rx-form';
-import { debounce } from 'rxjs/add/operator/debounce';
-import { interval } from 'rxjs/observable/interval';
+import { debounceTime } from 'rxjs/add/operator/debounceTime';
 
 export default class FormConnect extends PureComponent {
   static TICK = 33;
@@ -40,7 +39,7 @@ export default class FormConnect extends PureComponent {
 
     if (props.debounce > 0) {
       this.subscription = observable
-        .debounce(() => interval(props.debounce))
+        .debounceTime(props.debounce)
         .subscribe(() => this.forceUpdate());
     } else {
       this.subscription = observable.subscribe(() => this.forceUpdate());
