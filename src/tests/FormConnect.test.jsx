@@ -12,7 +12,9 @@ describe('Test FormConnect', () => {
       return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
     });
 
-    const component = renderer.create(<FormConnect form={form} whenForm debounce={0}>{mockFn}</FormConnect>);
+    const component = renderer.create(
+      <FormConnect form={form} whenForm debounce={0}>{mockFn}</FormConnect>
+    );
 
     form.setAttribute('name', 'a');
     form.set('foo', 'bar');
@@ -44,7 +46,9 @@ describe('Test FormConnect', () => {
       return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
     });
 
-    const component = renderer.create(<FormConnect form={form} whenForm={['a', 'b']} debounce={0}>{mockFn}</FormConnect>);
+    const component = renderer.create(
+      <FormConnect form={form} whenForm={['a', 'b']} debounce={0}>{mockFn}</FormConnect>
+    );
 
     mockFn.mockClear();
     form.setAttribute('name', 'a');
@@ -69,7 +73,9 @@ describe('Test FormConnect', () => {
       return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
     });
 
-    renderer.create(<FormConnect form={form} whenModel={['password']} debounce={0}>{mockFn}</FormConnect>);
+    renderer.create(
+      <FormConnect form={form} whenModel={['password']} debounce={0}>{mockFn}</FormConnect>
+    );
 
     mockFn.mockClear();
     form.setAttribute('name', 'Paul');
@@ -90,7 +96,9 @@ describe('Test FormConnect', () => {
       return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
     });
 
-    renderer.create(<FormConnect form={form} whenModel={['password']} whenForm={['a', 'b']} debounce={0}>{mockFn}</FormConnect>);
+    renderer.create(
+      <FormConnect form={form} whenModel={['password']} whenForm={['a', 'b']} debounce={0}>{mockFn}</FormConnect>
+    );
 
     mockFn.mockClear();
     form.setAttribute('name', 'Paul');
@@ -116,7 +124,9 @@ describe('Test FormConnect', () => {
       return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
     });
 
-    renderer.create(<FormConnect form={form} whenModel={['password']} whenForm={['a', 'b']}>{mockFn}</FormConnect>);
+    renderer.create(
+      <FormConnect form={form} whenModel={['password']} whenForm={['a', 'b']}>{mockFn}</FormConnect>
+    );
 
     mockFn.mockClear();
     form.setAttribute('password', 'Paul');
@@ -145,6 +155,25 @@ describe('Test FormConnect', () => {
     await form.validate();
     await new Promise(resolve => setTimeout(resolve, FormConnect.TICK));
 
+    expect(mockFn).toHaveBeenCalledTimes(1);
+  });
+
+  test('debounce prop test 2', async () => {
+    const form = new Form(new TestModel());
+
+    const mockFn = jest.fn((f) => {
+      return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
+    });
+
+    renderer.create(
+      <FormConnect form={form} whenModel={['password']}>{mockFn}</FormConnect>
+    );
+
+    mockFn.mockClear();
+    form.setAttribute('password', 'Paul');
+    await form.validate();
+
+    await new Promise(resolve => setTimeout(resolve, FormConnect.TICK));
     expect(mockFn).toHaveBeenCalledTimes(1);
   });
 });
