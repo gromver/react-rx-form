@@ -1,18 +1,23 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'rx-form';
+import { debounceTime } from 'rxjs/add/operator/debounceTime';
 
 export default class FormConnect extends PureComponent {
+  static TICK = 33;
+
   static propTypes = {
     form: PropTypes.instanceOf(Form).isRequired,
     children: PropTypes.func.isRequired,
     whenForm: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.bool]),
     whenModel: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.bool]),
+    debounce: PropTypes.number,
   };
 
   static defaultProps = {
     whenForm: [],
     whenModel: [],
+    debounce: FormConnect.TICK,
   };
 
   constructor(props, context) {
@@ -32,7 +37,13 @@ export default class FormConnect extends PureComponent {
       observable.whenAttributesChanged(props.whenModel);
     }
 
-    this.subscription = observable.subscribe(() => this.forceUpdate());
+    if (props.debounce > 0) {
+      this.subscription = observable
+        .debounceTime(props.debounce)
+        .subscribe(() => this.forceUpdate());
+    } else {
+      this.subscription = observable.subscribe(() => this.forceUpdate());
+    }
   }
 
   componentWillUnmount() {
