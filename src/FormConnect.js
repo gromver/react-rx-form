@@ -4,7 +4,7 @@ import { Form } from 'rx-form';
 import { debounceTime } from 'rxjs/add/operator/debounceTime';
 
 export default class FormConnect extends PureComponent {
-  static TICK = 33;
+  static TICK = 1;
 
   static propTypes = {
     form: PropTypes.instanceOf(Form).isRequired,
