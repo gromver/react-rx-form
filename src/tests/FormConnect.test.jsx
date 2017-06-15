@@ -137,7 +137,7 @@ describe('Test FormConnect', () => {
 
     await new Promise(resolve => setTimeout(resolve, FormConnect.TICK));
 
-    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledTimes(2);
 
     mockFn.mockClear();
     form.setAttribute('password', 'abc');
@@ -152,10 +152,11 @@ describe('Test FormConnect', () => {
 
     mockFn.mockClear();
     form.setAttribute('password', 'abc');
+    form.setAttribute('password', 'bvs');
     await form.validate();
     await new Promise(resolve => setTimeout(resolve, FormConnect.TICK));
 
-    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledTimes(3);
   });
 
   test('debounce prop test 2', async () => {
@@ -174,6 +175,6 @@ describe('Test FormConnect', () => {
     await form.validate();
 
     await new Promise(resolve => setTimeout(resolve, FormConnect.TICK));
-    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledTimes(2);
   });
 });

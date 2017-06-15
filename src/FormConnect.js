@@ -1,10 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'rx-form';
-import { debounceTime } from 'rxjs/add/operator/debounceTime';
+import { PristineState } from 'rx-model/states';
+import { debounce } from 'rxjs/add/operator/debounce';
+import { empty } from 'rxjs/observable/empty';
+import { interval } from 'rxjs/observable/interval';
 
 export default class FormConnect extends PureComponent {
-  static TICK = 1;
+  static TICK = 33;
 
   static propTypes = {
     form: PropTypes.instanceOf(Form).isRequired,
@@ -39,7 +42,11 @@ export default class FormConnect extends PureComponent {
 
     if (props.debounce > 0) {
       this.subscription = observable
-        .debounceTime(props.debounce)
+        .debounce((v) => {
+          const state = v.model;
+
+          return (state && state instanceof PristineState) ? empty() : interval(props.debounce);
+        })
         .subscribe(() => this.forceUpdate());
     } else {
       this.subscription = observable.subscribe(() => this.forceUpdate());
