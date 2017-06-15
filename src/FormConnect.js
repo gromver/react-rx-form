@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'rx-form';
-import { PristineState } from 'rx-model/states';
+import { MutationState } from 'rx-model/states';
 import { debounce } from 'rxjs/add/operator/debounce';
 import { empty } from 'rxjs/observable/empty';
 import { interval } from 'rxjs/observable/interval';
@@ -29,23 +29,23 @@ export default class FormConnect extends PureComponent {
     const observable = props.form.getObservable();
 
     if (props.whenForm === true) {
-      observable.whenFormChanged();
+      observable.whenForm();
     } else if (Array.isArray(props.whenForm) && props.whenForm.length) {
-      observable.whenStateChanged(props.whenForm);
+      observable.whenForm(props.whenForm);
     }
 
     if (props.whenModel === true) {
-      observable.whenModelChanged();
+      observable.whenModel();
+      observable.whenValidation();
     } else if (Array.isArray(props.whenModel) && props.whenModel.length) {
-      observable.whenAttributesChanged(props.whenModel);
+      observable.whenModel(props.whenModel);
+      observable.whenValidation(props.whenModel);
     }
 
     if (props.debounce > 0) {
       this.subscription = observable
-        .debounce((v) => {
-          const state = v.model;
-
-          return (state && state instanceof PristineState) ? empty() : interval(props.debounce);
+        .debounce((state) => {
+          return state instanceof MutationState ? empty() : interval(props.debounce);
         })
         .subscribe(() => this.forceUpdate());
     } else {
