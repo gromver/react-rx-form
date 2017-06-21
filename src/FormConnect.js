@@ -26,31 +26,17 @@ export default class FormConnect extends PureComponent {
   constructor(props, context) {
     super(props, context);
 
-    const observable = props.form.getObservable();
+    this.connect(props);
+  }
 
-    if (props.whenForm === true) {
-      observable.whenForm();
-    } else if (Array.isArray(props.whenForm) && props.whenForm.length) {
-      observable.whenForm(props.whenForm);
+  shouldComponentUpdate(nextProps, nextState) {
+    if (super.shouldComponentUpdate(nextProps, nextState)) {
+      this.connect(nextProps);
+
+      return true;
     }
 
-    if (props.whenModel === true) {
-      observable.whenModel();
-      observable.whenValidation();
-    } else if (Array.isArray(props.whenModel) && props.whenModel.length) {
-      observable.whenModel(props.whenModel);
-      observable.whenValidation(props.whenModel);
-    }
-
-    if (props.debounce > 0) {
-      this.subscription = observable
-        .debounce((state) => {
-          return state instanceof MutationState ? empty() : interval(props.debounce);
-        })
-        .subscribe(() => this.forceUpdate());
-    } else {
-      this.subscription = observable.subscribe(() => this.forceUpdate());
-    }
+    return false;
   }
 
   componentWillUnmount() {
@@ -58,6 +44,38 @@ export default class FormConnect extends PureComponent {
   }
 
   subscription;
+
+  connect({ form, whenForm, whenModel, debounce: delay }) {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+    const observable = form.getObservable();
+
+    if (whenForm === true) {
+      observable.whenForm();
+    } else if (Array.isArray(whenForm) && whenForm.length) {
+      observable.whenForm(whenForm);
+    }
+
+    if (whenModel === true) {
+      observable.whenModel();
+      observable.whenValidation();
+    } else if (Array.isArray(whenModel) && whenModel.length) {
+      observable.whenModel(whenModel);
+      observable.whenValidation(whenModel);
+    }
+
+    if (delay > 0) {
+      this.subscription = observable
+        .debounce((state) => {
+          return state instanceof MutationState ? empty() : interval(delay);
+        })
+        .subscribe(() => this.forceUpdate());
+    } else {
+      this.subscription = observable.subscribe(() => this.forceUpdate());
+    }
+  }
 
   render() {
     return this.props.children(this.props.form);
