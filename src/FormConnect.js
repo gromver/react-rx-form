@@ -29,14 +29,10 @@ export default class FormConnect extends PureComponent {
     this.connect(props);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (super.shouldComponentUpdate(nextProps, nextState)) {
+  componentWillReceiveProps(nextProps, nextState) {
+    if (this.shouldComponentUpdate(nextProps, nextState)) {
       this.connect(nextProps);
-
-      return true;
     }
-
-    return false;
   }
 
   componentWillUnmount() {
