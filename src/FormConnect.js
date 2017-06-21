@@ -29,8 +29,9 @@ export default class FormConnect extends PureComponent {
     this.connect(props);
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
-    if (this.shouldComponentUpdate(nextProps, nextState)) {
+  componentWillReceiveProps(nextProps) {
+    // todo: track changes for all props
+    if (this.props.form !== nextProps.form) {
       this.connect(nextProps);
     }
   }

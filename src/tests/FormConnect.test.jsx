@@ -177,4 +177,41 @@ describe('Test FormConnect', () => {
     await new Promise(resolve => setTimeout(resolve, FormConnect.TICK));
     expect(mockFn).toHaveBeenCalledTimes(2);
   });
+
+  test('componentWillReceiveProps test', async () => {
+    const mockFn = jest.fn((f) => {
+      return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
+    });
+
+    const Wrapper = React.createClass({
+      getInitialState() {
+        return {
+          whenModel: ['password', 'name'],
+          form: new Form(new TestModel()),
+        };
+      },
+      componentDidMount() {
+        this.setState({
+          form: new Form(new TestModel()),
+        }, () => this.setState({
+          whenModel: ['password', 'name'],
+        }, () => this.setState({
+          form: this.state.form,
+        }, () => this.setState({
+          form: new Form(new TestModel()),
+        }, () => this.setState({
+          form: this.state.form,
+        })))));
+      },
+
+      render() {
+        const { whenModel, form } = this.state;
+        return <FormConnect form={form} whenModel={whenModel}>{mockFn}</FormConnect>
+      },
+    });
+
+    renderer.create(<Wrapper />);
+
+    expect(mockFn).toHaveBeenCalledTimes(4);
+  });
 });
