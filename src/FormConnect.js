@@ -1,10 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Form } from 'rx-form';
-import { MutationState } from 'rx-model/states';
-import { debounce } from 'rxjs/add/operator/debounce';
-import { empty } from 'rxjs/observable/empty';
-import { interval } from 'rxjs/observable/interval';
+import { Form } from 'rx-model';
+import { merge } from 'rxjs/observable/merge';
+import { debounceTime } from 'rxjs/add/operator/debounceTime';
 
 export default class FormConnect extends PureComponent {
   static TICK = 33;
@@ -18,8 +16,6 @@ export default class FormConnect extends PureComponent {
   };
 
   static defaultProps = {
-    whenForm: [],
-    whenModel: [],
     debounce: FormConnect.TICK,
   };
 
@@ -47,31 +43,32 @@ export default class FormConnect extends PureComponent {
       this.subscription.unsubscribe();
     }
 
-    const observable = form.getObservable();
+    const stateObservable = form.getStateObservable();
+    const attributeObservable = form.getAttributeObservable();
+    const validationObservable = form.getValidationObservable();
 
-    if (whenForm === true) {
-      observable.whenForm();
-    } else if (Array.isArray(whenForm) && whenForm.length) {
-      observable.whenForm(whenForm);
+    const observables = [];
+
+    if (whenModel !== undefined) {
+      const attributes = Array.isArray(whenModel) ? whenModel : [];
+
+      observables.push(attributeObservable.when(attributes));
+      validationObservable.when(attributes);
+
+      if (delay > 0) {
+        observables.push(validationObservable.debounceTime(delay));
+      } else {
+        observables.push(validationObservable);
+      }
     }
 
-    if (whenModel === true) {
-      observable.whenModel();
-      observable.whenValidation();
-    } else if (Array.isArray(whenModel) && whenModel.length) {
-      observable.whenModel(whenModel);
-      observable.whenValidation(whenModel);
+    if (whenForm !== undefined) {
+      const properties = Array.isArray(whenForm) ? whenForm : [];
+
+      observables.push(stateObservable.when(properties));
     }
 
-    if (delay > 0) {
-      this.subscription = observable
-        .debounce((state) => {
-          return state instanceof MutationState ? empty() : interval(delay);
-        })
-        .subscribe(() => this.forceUpdate());
-    } else {
-      this.subscription = observable.subscribe(() => this.forceUpdate());
-    }
+    this.subscription = merge(...observables).subscribe(() => this.forceUpdate());
   }
 
   render() {

@@ -1,24 +1,24 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { Form } from 'rx-form';
 import FormConnect from '../FormConnect';
-import TestModel from './models/TestModel';
+import TestForm from './forms/TestForm';
 
 describe('Test FormConnect', () => {
   test('FormConnect with no when... props', async () => {
-    const form = new Form(new TestModel());
+    const form = new TestForm();
 
     const mockFn = jest.fn((f) => {
-      return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
+      return <span>{f.getFirstError() && f.getFirstError().state}</span>;
     });
 
     const component = renderer.create(
       <FormConnect form={form} whenForm debounce={0}>{mockFn}</FormConnect>
     );
 
+    mockFn.mockClear();
     form.setAttribute('name', 'a');
-    form.set('foo', 'bar');
-    expect(mockFn).toHaveBeenCalledTimes(2);
+    form.setStateValue('foo', 'bar');
+    expect(mockFn).toHaveBeenCalledTimes(1);
     expect(component).toMatchSnapshot();
 
     mockFn.mockClear();
@@ -27,8 +27,8 @@ describe('Test FormConnect', () => {
     expect(component).toMatchSnapshot();
 
     mockFn.mockClear();
-    form.set('a', 'a');
-    form.set('b', 'b');
+    form.setStateValue('a', 'a');
+    form.setStateValue('b', 'b');
     expect(mockFn).toHaveBeenCalledTimes(2);
     expect(component).toMatchSnapshot();
 
@@ -40,10 +40,10 @@ describe('Test FormConnect', () => {
   });
 
   test('FormConnect with whenForm prop', async () => {
-    const form = new Form(new TestModel());
+    const form = new TestForm();
 
     const mockFn = jest.fn((f) => {
-      return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
+      return <span>{f.getFirstError() && f.getFirstError().state}</span>;
     });
 
     const component = renderer.create(
@@ -52,11 +52,11 @@ describe('Test FormConnect', () => {
 
     mockFn.mockClear();
     form.setAttribute('name', 'a');
-    form.set('a', 'a');
-    form.set('b', 'b');
-    form.set('c', 'c');
-    form.set('d', 'd');
-    form.set('e', 'e');
+    form.setStateValue('a', 'a');
+    form.setStateValue('b', 'b');
+    form.setStateValue('c', 'c');
+    form.setStateValue('d', 'd');
+    form.setStateValue('e', 'e');
     expect(mockFn).toHaveBeenCalledTimes(2);
     expect(component).toMatchSnapshot();
 
@@ -67,10 +67,10 @@ describe('Test FormConnect', () => {
   });
 
   test('FormConnect with whenModel prop', async () => {
-    const form = new Form(new TestModel());
+    const form = new TestForm();
 
     const mockFn = jest.fn((f) => {
-      return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
+      return <span>{f.getFirstError() && f.getFirstError().state}</span>;
     });
 
     renderer.create(
@@ -79,8 +79,8 @@ describe('Test FormConnect', () => {
 
     mockFn.mockClear();
     form.setAttribute('name', 'Paul');
-    form.set('a', 'a');
-    form.set('b', 'b');
+    form.setStateValue('a', 'a');
+    form.setStateValue('b', 'b');
     expect(mockFn).toHaveBeenCalledTimes(0);
 
     mockFn.mockClear();
@@ -90,10 +90,10 @@ describe('Test FormConnect', () => {
   });
 
   test('FormConnect with whenModel and whenForm prop', async () => {
-    const form = new Form(new TestModel());
+    const form = new TestForm();
 
     const mockFn = jest.fn((f) => {
-      return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
+      return <span>{f.getFirstError() && f.getFirstError().state}</span>;
     });
 
     renderer.create(
@@ -102,26 +102,26 @@ describe('Test FormConnect', () => {
 
     mockFn.mockClear();
     form.setAttribute('name', 'Paul');
-    form.set('a', 'a');
-    form.set('b', 'b');
-    form.set('c', 'c');
-    form.set('d', 'd');
+    form.setStateValue('a', 'a');
+    form.setStateValue('b', 'b');
+    form.setStateValue('c', 'c');
+    form.setStateValue('d', 'd');
     expect(mockFn).toHaveBeenCalledTimes(2);
 
     mockFn.mockClear();
     form.setAttribute('name', 'John');
     form.setAttribute('password', 'abc');
-    form.set('b', 'b');
-    form.set('c', 'c');
-    form.set('d', 'd');
+    form.setStateValue('b', 'b');
+    form.setStateValue('c', 'c');
+    form.setStateValue('d', 'd');
     expect(mockFn).toHaveBeenCalledTimes(2);
   });
 
   test('debounce prop test', async () => {
-    const form = new Form(new TestModel());
+    const form = new TestForm();
 
     const mockFn = jest.fn((f) => {
-      return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
+      return <span>{f.getFirstError() && f.getFirstError().state}</span>;
     });
 
     renderer.create(
@@ -130,25 +130,12 @@ describe('Test FormConnect', () => {
 
     mockFn.mockClear();
     form.setAttribute('password', 'Paul');
-    form.set('a', 'a');
-    form.set('b', 'b');
-    form.set('c', 'c');
-    form.set('d', 'd');
+    form.setStateValue('a', 'a');
+    form.setStateValue('b', 'b');
+    form.setStateValue('c', 'c');
+    form.setStateValue('d', 'd');
 
-    await new Promise(resolve => setTimeout(resolve, FormConnect.TICK));
-
-    expect(mockFn).toHaveBeenCalledTimes(2);
-
-    mockFn.mockClear();
-    form.setAttribute('password', 'abc');
-
-    await new Promise(resolve => setTimeout(resolve, FormConnect.TICK));
-
-    form.set('b', 'b');
-
-    await new Promise(resolve => setTimeout(resolve, FormConnect.TICK));
-
-    expect(mockFn).toHaveBeenCalledTimes(2);
+    expect(mockFn).toHaveBeenCalledTimes(3);
 
     mockFn.mockClear();
     form.setAttribute('password', 'abc');
@@ -160,10 +147,10 @@ describe('Test FormConnect', () => {
   });
 
   test('debounce prop test 2', async () => {
-    const form = new Form(new TestModel());
+    const form = new TestForm();
 
     const mockFn = jest.fn((f) => {
-      return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
+      return <span>{f.getFirstError() && f.getFirstError().state}</span>;
     });
 
     renderer.create(
@@ -180,25 +167,25 @@ describe('Test FormConnect', () => {
 
   test('componentWillReceiveProps test', async () => {
     const mockFn = jest.fn((f) => {
-      return <span>{f.getModel().getFirstError() && f.getModel().getFirstError().state}</span>;
+      return <span>{f.getFirstError() && f.getFirstError().state}</span>;
     });
 
     const Wrapper = React.createClass({
       getInitialState() {
         return {
           whenModel: ['password', 'name'],
-          form: new Form(new TestModel()),
+          form: new TestForm(),
         };
       },
       componentDidMount() {
         this.setState({
-          form: new Form(new TestModel()),
+          form: new TestForm(),
         }, () => this.setState({
           whenModel: ['password', 'name'],
         }, () => this.setState({
           form: this.state.form,
         }, () => this.setState({
-          form: new Form(new TestModel()),
+          form: new TestForm(),
         }, () => this.setState({
           form: this.state.form,
         })))));
