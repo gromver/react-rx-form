@@ -33,7 +33,9 @@ export default class FormConnect extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   subscription;
