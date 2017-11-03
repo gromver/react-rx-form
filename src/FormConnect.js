@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'rx-model';
 import { merge } from 'rxjs/observable/merge';
 import { debounceTime } from 'rxjs/add/operator/debounceTime';
+import utils from './utils';
 
 export default class FormConnect extends PureComponent {
   static TICK = 33;
@@ -17,6 +19,8 @@ export default class FormConnect extends PureComponent {
 
   static defaultProps = {
     debounce: FormConnect.TICK,
+    whenForm: false,
+    whenModel: false,
   };
 
   constructor(props, context) {
@@ -26,8 +30,12 @@ export default class FormConnect extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    // todo: track changes for all props
-    if (this.props.form !== nextProps.form) {
+    if (
+      this.props.form !== nextProps.form
+      || !utils.compareAttributes(this.props.whenForm, nextProps.whenForm)
+      || !utils.compareAttributes(this.props.whenModel, nextProps.whenModel)
+      || this.props.debounce !== nextProps.debounce
+    ) {
       this.connect(nextProps);
     }
   }
@@ -51,7 +59,7 @@ export default class FormConnect extends PureComponent {
 
     const observables = [];
 
-    if (whenModel !== undefined) {
+    if (whenModel !== false) {
       const attributes = Array.isArray(whenModel) ? whenModel : [];
 
       observables.push(attributeObservable.when(attributes));
@@ -64,7 +72,7 @@ export default class FormConnect extends PureComponent {
       }
     }
 
-    if (whenForm !== undefined) {
+    if (whenForm !== false) {
       const properties = Array.isArray(whenForm) ? whenForm : [];
 
       observables.push(stateObservable.when(properties));

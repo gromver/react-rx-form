@@ -1,3 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`Test FormConnect FormConnect with no when... props 1`] = `<span />`;
 
 exports[`Test FormConnect FormConnect with no when... props 2`] = `<span />`;
