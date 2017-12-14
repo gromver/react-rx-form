@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'rx-model';
 import { merge } from 'rxjs/observable/merge';
-import { debounceTime } from 'rxjs/add/operator/debounceTime';
+import { debounceTime } from 'rxjs/operator/debounceTime';
 import utils from './utils';
 
 export default class FormConnect extends PureComponent {
@@ -66,7 +66,7 @@ export default class FormConnect extends PureComponent {
       validationObservable.when(attributes);
 
       if (delay > 0) {
-        observables.push(validationObservable.debounceTime(delay));
+        observables.push(debounceTime.call(validationObservable, delay));
       } else {
         observables.push(validationObservable);
       }
