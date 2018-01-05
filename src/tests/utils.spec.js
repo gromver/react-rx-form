@@ -13,3 +13,14 @@ describe('compareAttributes', () => {
     expect(utils.compareAttributes(['foo', 'bar'], ['bar', 'foo'])).toBe(false);
   });
 });
+
+describe('normalizePath', () => {
+  test('Should return proper path', () => {
+    expect(utils.normalizePath()).toEqual([]);
+    expect(utils.normalizePath(null)).toEqual([]);
+    expect(utils.normalizePath(false)).toEqual([]);
+    expect(utils.normalizePath('foo')).toEqual(['foo']);
+    expect(utils.normalizePath(1)).toEqual([1]);
+    expect(utils.normalizePath(['bar'])).toEqual(['bar']);
+  });
+});

@@ -1,6 +1,6 @@
 {
   "name": "react-rx-form",
-  "version": "1.4.3",
+  "version": "2.0.0",
   "description": "React rx-form connectors",
   "main": "index.js",
   "scripts": {
@@ -38,13 +38,14 @@
   },
   "homepage": "https://github.com/gromver/react-rx-form#readme",
   "dependencies": {
+    "lodash": "^4.17.4",
     "prop-types": "^15.5.10",
+    "rx-form": "^2.0.18",
     "rxjs": "^5.3.0"
   },
   "peerDependencies": {
     "react": "^15.5.4",
-    "react-dom": "^15.5.4",
-    "rx-model": "^1.4.0"
+    "react-dom": "^15.5.4"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
@@ -71,13 +72,11 @@
     "gh-pages": "^1.0.0",
     "jest": "^21.2.1",
     "lint-staged": "^3.4.0",
-    "lodash": "^4.17.4",
     "pre-commit": "^1.2.2",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-test-renderer": "^15.4.2",
-    "rimraf": "^2.6.1",
-    "rx-model": "1.4.0"
+    "rimraf": "^2.6.1"
   },
   "lint-staged": {
     "./src": [

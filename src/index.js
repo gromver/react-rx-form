@@ -1,4 +1,10 @@
-import FormConnect from './FormConnect';
+import Form from './Form';
+import Field from './Field';
+import Connect from './Connect';
 
-// eslint-disable-next-line import/prefer-default-export
-export { FormConnect };
+// __eslint-disable-next-line import/prefer-default-export
+export {
+  Form,
+  Field,
+  Connect,
+};
