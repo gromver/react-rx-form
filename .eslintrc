@@ -6,3 +6,6 @@ env:
 
 globals:
   ReactClass: true
+
+rules:
+  arrow-parens: 0

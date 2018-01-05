@@ -1,6 +1,7 @@
 /**
  * Helpers
  */
+
 export default {
   /**
    * Compare two attribute lists
@@ -8,7 +9,7 @@ export default {
    * @param a2
    * @returns {boolean}
    */
-  compareAttributes: (a1, a2) => {
+  compareAttributes(a1, a2) {
     if (a1 instanceof Array && a2 instanceof Array) {
       if (a1.length !== a2.length) {
         return false;
@@ -22,5 +23,18 @@ export default {
     }
 
     return true;
+  },
+
+  /**
+   * Normalize path
+   * @param path
+   * @returns {*[]}
+   */
+  normalizePath(path) {
+    if (!Array.isArray(path)) {
+      return path ? [path] : [];
+    }
+
+    return path;
   },
 };
